@@ -1,0 +1,603 @@
+/*
+Zorphos inside the mountain house of DeathScorn island
+*/
+
+void StartOrbQuest()
+{
+
+
+    UI_push_answers();
+    UI_add_answer("Yes");
+    UI_add_answer("No");
+    
+    converse
+    {
+        if (response == "Yes")
+        {
+            say("@Thank you! We shall get along well.@");
+            gflags[ON_MAIN_QUEST] = true;
+            UI_clear_answers();
+			UI_pop_answers();
+			break;
+        }
+        else if (response == "No")
+        {
+            say("@Than leave me be.@");
+           	UI_clear_answers();
+			UI_pop_answers();
+			break;
+        }
+    }
+    
+}
+
+void ZorphosConstruct()
+{
+UI_push_answers();
+
+converse(["Location", "What about the ring?", "That is it?", "Nevermind"])
+{
+
+	case "Nevermind" (remove):
+	say("@But of course.@");
+	UI_clear_answers();
+	UI_pop_answers();
+	break;
+
+    case "Location" (remove):
+	say("@There is an old Dark Monk sacrificial ground in the northern part of the mountain, just north of the old Archibald mansion. I believe we can use this as our location to construct the orb.@");
+	say("@Head to this location and begin the process. I still have several items which I must prepare but by the time you arrive I should be ready.@");
+
+    case "What about the ring?" (remove):
+	say("@I have not yet figured out the purpose of the ring, other than it was in the possession of Akakothen when the Orb was originally constructed.@");
+	say("@I hope that the mere presence of the ring is all that is required.@");
+
+    case "That is it?" (remove):
+	say("@I will be speaking an incantation while you break the Orb of Focus. I may not possess the magical ability of Akakothen but I believe I do possess enough control for the process.@");
+
+	
+}
+	
+}
+
+void Zorphos object#(0x41b) ()
+	{
+
+var has_persuasion_orb = UI_count_objects(PARTY, ORB_OF_PERSUASION, ANY, ANY);
+var has_focus_orb = UI_count_objects(PARTY, ORB_OF_FOCUS, ANY, ANY);
+var has_chaos_orb = UI_count_objects(PARTY, ORB_OF_CHAOS, ANY, ANY);
+var has_transfiguration_orb = UI_count_objects(PARTY, ORB_OF_TRANSFIGURATION, ANY, ANY);
+var has_soul_orb = UI_count_objects(PARTY, ORB_OF_SOULS, ANY, ANY);
+
+var has_hammer = UI_count_objects(PARTY, HAMMER_OF_DIVINITY, ANY, ANY);
+var has_flux = UI_count_objects(PARTY, FLUX_CAPACITOR, ANY, ANY);
+var has_ring = UI_count_objects(PARTY, RING, ANY, ANY);
+
+var ancient_scroll = UI_count_objects(PARTY, ANCIENT_SCROLL, ANY, ANY); // Ancient scroll from Brentonia
+
+var has_blinker = UI_count_objects(PARTY, BLINKER, ANY, ANY);
+
+var timer_for_scroll = 24;
+var timer_for_creation = 24;
+
+if (has_persuasion_orb > 0 && has_focus_orb > 0 && has_chaos_orb > 0 && has_transfiguration_orb > 0 && has_focus_orb >0)
+{
+    gflags[HAS_ALL_ORBS] = true;
+}
+
+if(gflags[CONSTRUCT_ORB1])
+{
+}
+
+else
+{
+
+	if (event == 0)
+		{
+		if (UI_get_schedule_type(item) == 14)
+			{
+			UI_item_say(item, "Zzzz");
+			return;
+			}
+		else
+			{
+			var n = UI_get_random(2);// 1-2.
+			if (n == 1)
+				UI_item_say(item, "I must discover its secrets");
+			else if (n == 2)
+				UI_item_say(item, "Blasted orbs!");
+			}
+		}
+}
+
+	UI_show_npc_face(item);
+
+    	UI_add_answer("Name");
+		UI_add_answer("Job");
+		UI_add_answer("Bye");
+
+if (UI_get_item_flag(item, MET)) 
+	{
+		say("@You again I see.@");
+			if (gflags[NICE_ZORPHOS])
+			{
+			UI_add_answer("Orb of Infinity");
+			}
+			UI_remove_answer("Name");
+	}
+else
+	{
+
+		say("@What do you want?@");
+		UI_set_item_flag(item, MET, true);
+	}
+// End MET Flag
+
+
+if (has_soul_orb > 0) // IF YOU POSSESS THE ORB OF SOULS
+	{
+	UI_add_answer("I have the Orb of Souls");
+
+
+			if (gflags[TALKED_TO_ZOMBIE_SON]) // TALKED TO THE SON WHILE HOLDING THE ORB
+
+				{
+				    if (gflags[HAS_ALL_ORBS])
+				    {
+					
+				        UI_add_answer("I possess all the orbs");
+				        UI_remove_answer("I have the Orb of Souls");
+                    }
+                    else
+                    {
+					UI_remove_answer("I have the Orb of Souls");
+					UI_add_answer("Orb of Chaos");
+                    }
+				}
+
+	} // End bracket for has_soul_orb if statement
+
+
+if (gflags[BASEMENT_OF_CASTLE])  // After talking to the servant ghost in monitor crypts
+{
+
+    UI_add_answer("Akakothen's resting place");
+    UI_remove_answer("I possess all the orbs");
+
+}
+
+if (gflags[HAS_ALL_ORBS])
+{
+	UI_add_answer("I possess all the orbs");
+	UI_remove_answer("I have the Orb of Souls");
+}
+
+if (gflags[TALKED_TO_AKAKOTHEN1])   // After talking to Akakothen in the castle
+{
+    UI_remove_answer("Akakothen's resting place");
+	UI_remove_answer("I possess all the orbs");
+    if (gflags[HAS_ARTIFACTS]) // If you have spoken to him about having the artifacts
+    {
+    }
+    else
+    {
+
+    UI_add_answer("Artifacts");
+    }
+}
+
+if (has_ring > 0 && has_flux > 0 && has_hammer > 0)
+{
+    gflags[HAS_ARTIFACTS] = true;
+    UI_add_answer("I have the artifacts");
+}
+
+if (ancient_scroll > 0)
+{
+    gflags[HAS_SCROLL] = true;
+    UI_add_answer("Ancient scroll");
+}
+if (gflags[DECIPHERED_SCROLL] && UI_get_timer(timer_for_scroll) > 24) // After you give him the scroll sets for 24 hours until he will have it deciphered
+    {
+    UI_add_answer("Scroll deciphering");
+    UI_remove_answer("Artifacts");
+    }
+if (gflags[CONSTRUCT_ORB])
+{
+    UI_remove_answer("Scroll deciphering"); // Any stray talks about the pre-quest stuff to making it can be added here to remove the conversation
+}
+
+	
+// THIS FLAG HERE WILL HAVE HIM BE MORE KIND TO YOU AND WORK WITH YOU - Occurs after talking to him with gflag read_orb_book set (reading book quality 11)
+
+if (gflags[NICE_ZORPHOS])
+{
+converse
+{
+	if (response == "Bye")
+		{
+		say("@Fare well and safe journey.@");
+		break;
+		}
+	else if (response == "Job")
+		{
+		say("@I still continue my research about the Orb of Infinity.@");
+		UI_remove_answer("Job");
+
+		}
+	else if (response == "Orb of Infinity")
+		{
+		say("@Since I have written my book I have come to the conclusion that the Orb of Infinity did infact once exist, and it can be remade by combining the five minor orbs.@");
+		say("@It is also my belief that the existance of the minor orbs has caused much disarray in the lands, though as of late my focus has been on the Orb of Souls.@");
+		say("@Through my research I have come to the conclusion that the Orb of Infinity can be recreated, destroyed, and remove the effects the minor orbs have upon the land.@");
+		say("@But it seems the minor orbs must be recombined into the Orb of Infinity so that it can be properly destroyed.@");
+		say("@At this point I believe the Orb of Infinity can be destroyed and the restless souls can be truely set free.@");
+		if (gflags[ON_MAIN_QUEST])
+           {
+			say("@But you know all of this already as you have chosen to help me with this task.@");
+           }
+        else
+           {		
+            say("@Will you help me recover the all of the orbs and reconstruct the Orb of Infinity?");
+            StartOrbQuest();
+            
+			if (gflags[ON_MAIN_QUEST]) // This is if you say yes
+			{
+			}
+			else // If you say no to StartOrbQuest it will then kill this convo overall
+			{
+				break;
+			}
+            
+           }
+        
+		UI_remove_answer("Orb of Infinity");
+		if (gflags[HAS_ALL_ORBS])
+		{
+        }
+        else
+        {
+		UI_add_answer("Orb of Souls");
+		UI_add_answer("Minor orbs");
+        }
+	
+		}
+	else if (response == "Orb of Souls")
+		{
+			say("@As I mentioned most of my research as of late has been focused on the Orb of Souls. Unfortunately what I have discovered about this orb is quite disturbing.@");
+			say("@It seems that since the Orb of Souls creation, and as long as it exists, when one dies their essence is unable to fully pass from the land of the living.@");
+			say("@Some continue to wander the land in the form of ghosts or other undead, unable to communicate, while the essence of others simply remain in a state of unlife and undeath.@");
+			say("@Essentially all those who die seem to currently exist in a state of limbo, rendering communication with them impossible.@");
+			say("@However, it is my belief that if one were to possess the Orb of Souls this barrier could be broken and communication possible.@");
+			say("@But I have been unable to test this hypothesis as I do not currently possess the Orb of Souls, but my theory is quite sound.@");
+			UI_remove_answer("Orb of Souls");
+			UI_add_answer("State of limbo");
+		}
+	else if (response == "State of limbo")
+	{
+		say("@It is my belief all those who have passed on since the creation of the Orb of Souls cannot fully pass onto the realm of the dead.@");
+		say("@Imagine, thousands of years worth of spirits and souls all floating in a state of nothingness.@");
+		UI_remove_answer("State of limbo");
+	}
+	else if (response == "Minor orbs")
+		{
+		say("@I have already published all of my knowledge on the other minor orbs in my book so I cannot be of much help in terms of new information. But I can point you in a new direction.@");
+		say("@There is a cyclops who lives on Kintore island named Polyphemus. It is he who I learned much of my information from. As far as I know he still resides there.@");
+		say("@Hopefully you can gather enough information from him to know where to begin searching for the other minor orbs.@");
+		say("@It is best that you mention to him that I have sent you. He will be far more likely to open up to someone whom he knows I trust.@");
+		gflags[TALK_TO_CYCLOPS] = true;
+		UI_remove_answer("Minor orbs");
+		}
+	else if (response == "I have the Orb of Souls") // COMES INTO PLAY IF YOU HAVE ORB IN YOUR PARTY
+		{
+		say("@It is wonderful to hear you have recovered the orb. You should try speaking to my undead son in the cell. Perhaps the orb will have an effect on his tortured soul and prove my theory correct.@");
+		UI_add_answer("Why talk to him?");
+		UI_remove_answer("I have the Orb of Souls");
+		}
+	else if (response == "Why talk to him?")
+		{
+		say("@In order to fully set my his soul free we must recreate the Orb of Infinity. It is my hope in his state he can communicate with the other souls in limbo.@");
+		say("@If this is possible we perhaps we can use his connection with those in limbo to learn information regarding the other orbs.@");
+		gflags[TALK_TO_ZOMBIE_SON] = true;
+		UI_remove_answer("Why talk to him?");
+		}
+
+	else if (response == "Orb of Chaos") // Comes into effect after talking to the zombie son with orb
+		{
+		say("@My son has mentioned to seek out those who mine? That could only mean the Solusek Mining Company.@");
+		say("@You should visit their headquarters on Solusek Island to see if you can discover anything. I will begin to study on how to bind the orbs into the Orb of Infinity once we possess them all.@");
+		UI_remove_answer("Orb of Chaos");
+		UI_add_answer("Other orbs");
+		}
+	else if (response == "Other orbs")
+	{
+			if(has_transfiguration_orb>0)
+			{
+				say("@You already possess the Orb of Transfiguration and you know where to begin searching for the Orb of Chaos.@");
+				say("@Perhaps Polyphemus can direct you as to where to find the remaining orbs. In the meantime I will continue to research how to actually combine the orbs together.@");
+			}
+			else
+			{
+				say("@You already know where to search for the Orb of Chaos and Transfiguration. I suggest you speak to Polyphemus to see about the remaining orbs.@");
+				say("@In the meantime I will research how we can actually combine the orbs to form the Orb of Infinity.@");
+				gflags[TALK_TO_CYCLOPS] = true;
+			}
+			UI_add_answer("Combine orbs");
+			UI_remove_answer("Other orbs");
+	}
+	else if (response == "Combine orbs")
+	{
+		UI_remove_answer("Combine orbs");
+	}	
+    else if (response == "I possess all the orbs")
+        {
+			if(gflags[TOLD_ZORPHOS_YOU_HAVE_ORBS])
+			{
+				say("@Yes, you have already made me aware of that. Do you not recall I mentioned we must seek out Akakothen?@");
+			}
+			else
+			{
+				say("@You have gathered them most quickly. So quickly infact that I am still uncertain how to combine them back into the Orb of Infinity.@");
+				say("@In fact, I fear that perhaps that such knowledge is only known to Akakothen.@");
+
+			}
+			UI_remove_answer("I possess all the orbs");
+            UI_add_answer("Akakothen");
+        }
+    else if (response == "Akakothen")
+    {
+        say("@As you know he was the one who created the Orb of Infinity to begin with. If it were possible to talk to his ghost perhaps we could get an idea of what to do...@");
+		say("@But anyone who would know where his corpse lay is long since dust.@");
+        say("@My only thoughts right now is to have you venture to the crypts of the Ophidian empire which lay in the Noxious Swamp of the mainland.@");
+		say("@If you were able to communicate with the spirit of a high priest surely you can learn something. That is as long as you possess the Orb of Souls.@");
+        UI_remove_answer("Akakothen");
+		UI_add_answer("High priest");
+    }
+	else if (response == "High priest")
+	{
+		say("@I am no historian on the Ophidians but I do know that they had high priests which who resided over many of the important dead.@");
+		say("@If there is anyway to find information regarding Akakothen's resting place, it would be one of them.@");
+		UI_remove_answer("High priest");
+	}
+    else if (response == "Akakothen's resting place")
+    {
+        say("@From what you tell me it would seem Akakothen still resides, at least in some form, in the basement of his castle.@");
+		say("@It seems you will have to venture forward to the Frigid Planes and search for the ruins and hopefully uncover an entrance.@");
+		if(has_blinker > 0)
+		{
+			say("@I also see that you have a blinker. This should aid you greatly in the return journey.@");
+		}
+        else
+        {
+            say("@As this is a long journey I shall give you an artifact of mine which has helped me in my studies. It is known as a blinker.@");
+            UI_add_party_items(1, BLINKER, ANY, ANY);
+            UI_add_answer("Blinker");
+        }
+
+        UI_remove_answer("Akakothen's resting place");
+    }
+    else if (response == "Artifacts")
+    {
+        if(gflags[ARTIFACT_LOCS]) // If you have spoken to Akakothen using the orb with the focusing lense
+        {
+			if(gflags[HAS_ARTIFACTS])
+			{
+				say("@Yes, I recall you mentioning that. You are gathering everything I seek far quicker than I could ever have anticipated.@");
+				say("@Sadly, I still need information on how to create the Orb of Infinity. You really should speak with Alagnar or Yesserm if you have not already.@");
+			}
+			else
+			{
+				say("@I am glad to learn that you have managed to use the orb without succumbing to its power. What has Akakothen told you about the artifacts?");
+				UI_add_answer("Artifact locations");
+			}
+        }
+        else
+        {
+        say("@From what you tell me it would seem that the ghost of Akakothen is somewhat mad. I do not think that you will be able to force the information out of him...@");
+		say("@But perhaps we can persuade it out of him by use of the Orb of Persuasion.@");
+        UI_add_answer("Use the Orb");
+        }
+        UI_remove_answer("Artifacts");
+    }
+    else if (response == "Use the Orb")
+    {
+        say("@Neither of us possess the appropriate skill to use the orb but perhaps it would be possible to focus what little control you possess.@");
+        say("@You should seek out a necromancer by the name of Avret on an island south of Brentonia. He is the only person who I could think of who could help us with this problem.@");
+        say("@Once you have discovered a solution to this problem you must use the orb on Akakothen. Hopefully this will give you an idea of where to begin searching for these artifacts.@");
+        gflags[TALK_TO_AVRET] = true;
+        UI_remove_answer("Use the Orb");
+        UI_add_answer("Necromancer");
+    }
+    else if (response == "Necromancer")
+    {
+        say("@A necromancer deals with the magical study of life and death. They are to close to the likes of the Dark Monks for my tastes.@");
+		say("@Unfortunately the type of research they conduct that may hold an answer to our dilemma.@");
+        UI_remove_answer("Necromancer");
+    }
+    else if (response == "Artifact locations")
+    {
+        say("@His hints are very vague, but at least it gives you something to work with.@");
+		say("@Judging by what you have been told I would wager that some of the artifacts can be found in a museum or a private collection of some sort.@");
+        UI_remove_answer("Artifact locations");
+        UI_add_answer("Glittering wings");
+    }
+    else if (response == "Glittering wings")
+    {
+        say("@Of this I am uncertain. I do not know what this could be referring to, but it sounds like some sort of creature possess this artifact.@");
+		say("@Perhaps in the library of Dewtopia you could find a clue to the meaning of this.@");
+        UI_remove_answer("Glittering wings");
+    }
+    else if (response == "I have the artifacts")
+    {
+        if(gflags[HAS_SCROLL])
+        {
+            if (gflags[DECIPHERED_SCROLL] && UI_get_timer(timer_for_scroll)>24 && gflags[HAS_ARTIFACTS] && gflags[HAS_ALL_ORBS])
+            {
+                say("@Wonderful. With the scroll deciphered and the artifacts and orbs in hand we can finally begin to construct the orb.@");
+                UI_remove_answer("Scroll deciphering");
+                gflags[CONSTRUCT_ORB] = true;
+                UI_add_answer("Construction");
+            }
+            else
+            {
+            say("@Excellent. And I see that you have also found a scroll which details the creation of the Orb of Infinity. This is good news as now I have an idea of how to begin the process.@");
+            say("@I will get to work on deciphering the scroll right away. Return to me in a day, and hopefully by then I will know how to begin the process.@");
+            UI_set_timer(timer_for_scroll);
+            UI_remove_party_items(1, ANCIENT_SCROLL, ANY, ANY);
+            gflags[DECIPHERED_SCROLL] = true;
+            UI_remove_answer("Ancient scroll");
+            }
+        }
+        else
+        {
+        say("@This is excellent, however I am still unsure of how to create the orb itself. We need some sort of clue as to how to begin the process... but where could something such as this be found?@");
+        say("@Perhaps... perhaps you could obtain information of this sort from Alagnar in Brentonia. Alagnar is a scholar for Lord Brent and comes across many ancient artifacts.@");
+		say("@It is also possible that Yesserm in Dewtopia may possess knowledge which could aid us.@");
+        }
+        UI_remove_answer("I have the artifacts");
+    }
+    else if (response == "Ancient scroll")
+    {
+        say("@This is most wonderful! This ancient scroll appears to be notes from the creation of the Orb of Infinity!@");
+		say("@Hopefully this will provide enough information for us to construct the orb. If you return to me in a day hopefully I will know have deciphered it enough so that we may begin the process.@");
+
+        UI_set_timer(timer_for_scroll);
+        UI_remove_answer("Ancient scroll");
+        UI_remove_party_items(1, ANCIENT_SCROLL, ANY, ANY);
+        gflags[DECIPHERED_SCROLL] = true;
+    }
+    else if (response == "Scroll deciphering")
+    {
+        if (gflags[HAS_ARTIFACTS] && gflags[HAS_ALL_ORBS])
+        {
+            say("@I have managed to decipher the scroll enough so that we may begin construction. As we possess the artifacts and the orbs we can now begin the construction of the Orb of Infinity.@");
+            UI_add_answer("Construction");
+        }
+        else
+        {
+            say("@I have figured out what needs to be done to begin the process. All we need now is to have all of the artifacts and orbs. Return to me when you possess them.@");
+        }
+        UI_remove_answer("Scroll deciphering");
+    }
+    else if (response == "Construction")
+    {
+
+        if (gflags[CONSTRUCT_ORB1] && UI_get_timer(timer_for_creation) > 24)
+        {
+            say("@It is now time to create the Orb.@");
+        }
+        else if (gflags[CONSTRUCT_ORB1] && UI_get_timer(timer_for_creation) < 24)
+        {
+            say("@It is not yet time to create the Orb.@");
+        }
+        else
+        {
+            say("@The scroll outlines a particular pattern in which the orbs and the artifacts were laid out. The orbs were placed on four pedestels with another pedestal in the centre.@");
+            say("@From here their close proximity and how they are laid out allows for a magical focus to occur. From here it would seem the flux capacitor was used upon the Orb of Focus.@");
+            say("@The Hammer of Divinity was then used to break the Orb of Focus which caused a surge of energy through the entire area.@");
+			say("@It would seem this energy is of such strength that the orbs bind together as one and result in the Orb of Infinity.@");
+            say("@I have prepared a scroll for you which you can reference in the event you forget the process.@");
+            /*
+            UI_modify_schedule(-27, 0, 11, [2360, 1418]);
+            UI_modify_schedule(-27, 2, 11, [2360, 1418]);
+            UI_modify_schedule(-27, 3, 11, [2360, 1418]);
+            UI_modify_schedule(-27, 6, 11, [2360, 1418]);
+            UI_modify_schedule(-27, 7, 11, [2360, 1418]);
+            */
+            UI_set_timer(timer_for_creation);
+            
+            UI_add_party_items(1, GOOD_SCROLL, 0, 73);
+            gflags[CONSTRUCT_ORB1] = true;
+			ZorphosConstruct();
+        }
+        UI_remove_answer("Construction");
+    }
+
+    else if (response == "Blinker")
+    {
+        say("@A blinker is a rather common artifact but it is quite useful. It always you to travel from one place to another where you have already visited.@");
+        say("@Although it only has the ability to store one location of your choice its real magic is the ability to sense where you would like it to bind and do so automatically.@");
+        UI_remove_answer("Blinker");
+    }
+
+
+
+	}
+}	
+else
+{
+converse
+{
+	if (response == "Bye")
+			{
+			say("@Begone.@");
+			
+			break;
+			}
+		else if (response == "Name")
+			{
+			say("@I am Zorphos though I know not why I tell you that.@");
+			UI_remove_answer("Name");
+			}
+		else if (response == "Job")
+			{
+			say("@I research ancient and powerful artifacts. Now if you do not have anything to talk to me about, please be on thy way.@");
+			UI_remove_answer("Job");
+
+		
+			if (gflags[READ_ORB_BOOK]) // If you read the orb book that is spawned in Dewtopia
+				{
+				UI_add_answer("Orb of Infinity");
+				}
+			}
+		else if (response == "Orb of Infinity")
+			{
+
+			say("@I did write a book on the Orb of Infinity but why do you seek me out when you can simply read my book?@");
+			UI_remove_answer("Orb of Infinity");
+			UI_add_answer("Need more information");
+
+			}
+		else if (response == "Need more information")
+			{
+			say("@Need more information do you? Well, I have learned much since I wrote about the orb, but I do not know why I should tell you.@");
+			if(gflags[GOBLINS_DEFEATED])
+			{
+				UI_add_answer("Goblins used an orb");
+			}
+			else
+			{
+				UI_add_answer("Goblins have an orb");
+			}
+			UI_remove_answer("Need more information");
+			}
+
+		else if (response == "Goblins have an orb")
+			{
+			say("@Such news is most troubling. As I have mentioned much has been learned since my book was written.@");
+			
+			UI_add_answer("What did you learn?");
+			UI_remove_answer("Goblins have an orb");
+			
+			}
+		else if (response == "Goblins used an orb")
+		{
+			say("You explain to Zorphos the tale of your goblin raid and their use of the orb. @Such news is most troubling.@");
+			say("@I am relieved however that you removed such an artifact from their possession as I have learned much of the orbs since my book was written.@");
+			UI_remove_answer("Goblins used an orb");
+			UI_add_answer("What did you learn?");
+		}
+		else if (response == "What did you learn?")
+		{
+		      say("@I have learned that the Orb of Infinity did in fact exist at one time, along with the minor orbs. There is much to discuss. Talk to me in a moment so that I may get my bearings.@");
+		      gflags[NICE_ZORPHOS] = true;
+		     UI_remove_answer("What did the learn?");
+		     break;
+		}
+
+
+		} // End bracket for else statement from gflags of nice zorphos
+		}
+	UI_remove_npc_face(item);
+	}
+

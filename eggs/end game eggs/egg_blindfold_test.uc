@@ -1,0 +1,185 @@
+void /*Blindfold_Arrival()
+{
+	gflags[PASSED_BLINDFOLD_TEST] = true;
+	gflags[BLINDFOLD_PATHING_ON] = false;
+	script AVATAR
+	{
+		say "It seems I have arrived";
+		wait 3;
+		call UnFreezeAvatar;
+	}
+}
+
+void Blindfold_Path_7 object#()()
+{
+	UI_si_path_run_usecode(AVATAR, [360, 326], SCRIPTED, AVATAR, Blindfold_Arrival, 0);	
+}
+
+void Blindfold_Path_Script_7 object#()()
+{
+	script AVATAR
+	{
+		call Blindfold_Path_7;
+	}
+}
+
+void Blindfold_Path_6 object#()()
+{
+	UI_si_path_run_usecode(AVATAR, [360, 347], SCRIPTED, AVATAR, Blindfold_Path_Script_7, 0);	
+}
+
+void Blindfold_Path_Script_6 object#()()
+{
+	script AVATAR
+	{
+		call Blindfold_Path_6;
+	}
+}
+
+void Blindfold_Path_5 object#()()
+{
+	UI_si_path_run_usecode(AVATAR, [372, 328], SCRIPTED, AVATAR, Blindfold_Path_Script_6, 0);	
+}
+
+void Blindfold_Path_Script_5 object#()()
+{
+	script AVATAR
+	{
+		call Blindfold_Path_5;
+	}
+}
+
+
+void Blindfold_Path_4 object#()()
+{
+	UI_si_path_run_usecode(AVATAR, [349, 324], SCRIPTED, AVATAR, Blindfold_Path_Script_5, 0);	
+}
+
+void Blindfold_Path_Script_4 object#()()
+{
+	script AVATAR
+	{
+		call Blindfold_Path_4;
+	}
+}
+
+void Blindfold_Path_3 object#()()
+{
+	UI_si_path_run_usecode(AVATAR, [374, 335], SCRIPTED, AVATAR, Blindfold_Path_Script_4, 0);	
+}
+
+void Blindfold_Path_Script_3 object#()()
+{
+	script AVATAR
+	{
+		call Blindfold_Path_3;
+	}
+}
+
+void Blindfold_Path_2 object#()()
+{
+	UI_si_path_run_usecode(AVATAR, [348, 328], SCRIPTED, AVATAR, Blindfold_Path_Script_3, 0);	
+}
+
+void Blindfold_Path_Script_2 object#()()
+{
+	script AVATAR
+	{
+		call Blindfold_Path_2;
+	}
+}
+
+void Blindfold_Path_1 object#()()
+{
+	UI_si_path_run_usecode(AVATAR, [340, 347], SCRIPTED, AVATAR, Blindfold_Path_Script_2, 0);	
+}
+
+void Blindfold_Path_Script_1()
+{
+	script AVATAR
+	{
+		call Blindfold_Path_1;
+	}
+}
+
+
+
+void egg_blindfold_test object#()()
+{
+
+var blindfold_equipped = UI_is_readied(AVATAR, 9, BLINDFOLD_OF_FATE, ANY);
+
+if(gflags[PASSED_BLINDFOLD_TEST]) // have already done the walking through the room
+{
+}
+
+else
+{
+if(gflags[ON_BLINDFOLD_TEST])
+{
+}
+else
+{
+if(blindfold_equipped)
+{
+	UI_set_item_flag(AVATAR, DONT_MOVE);
+	gflags[ON_BLINDFOLD_TEST] = true;
+	gflags[BLINDFOLD_PATHING_ON] = true;
+	UI_play_music(33);
+	script AVATAR
+	{
+		say "I cannot control myself...";
+	}
+	UI_si_path_run_usecode(AVATAR, [348, 340], SCRIPTED, AVATAR, Blindfold_Path_Script_1, 0);
+}
+else
+{
+
+var tele_spot = UI_die_roll(8);
+ 
+	if(tele_spot == 1)
+	{
+		UI_move_object(AVATAR, [339, 329]); // top left of room
+		UI_play_sound_effect(48);
+	}
+	else if (tele_spot == 2)
+	{
+		UI_move_object(AVATAR, [340, 345]); // bottom left of room
+		UI_play_sound_effect(48);
+	}
+	else if (tele_spot == 3)
+	{
+		UI_move_object(AVATAR, [350, 333]); // Mid left of room
+		UI_play_sound_effect(48);
+	}
+	else if (tele_spot == 4)
+	{
+		UI_move_object(AVATAR, [359, 346]); // Entrance to room
+		UI_play_sound_effect(48);
+	}
+	else if (tele_spot == 5)
+	{
+		UI_move_object(AVATAR, [367, 340]); // mid right of room
+		UI_play_sound_effect(48);
+	}
+	else if (tele_spot == 6)
+	{
+		UI_move_object(AVATAR, [369, 333]); // mid right of room # 2
+		UI_play_sound_effect(48);
+	}
+	else if (tele_spot == 7)
+	{
+		UI_move_object(AVATAR, [380, 323]); // top right of room
+		UI_play_sound_effect(48);
+	}
+	else if (tele_spot == 8)
+	{
+		UI_move_object(AVATAR, [381, 348]); // bottom right of room
+		UI_play_sound_effect(48);
+	}
+}	
+}
+}
+
+}
+*/
